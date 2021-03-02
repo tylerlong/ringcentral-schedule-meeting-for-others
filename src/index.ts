@@ -9,6 +9,25 @@ const rc = new RingCentral({
 });
 
 (async () => {
-  const ext = await rc.restapi().account().extension().get();
-  console.log(ext);
+  const response = await rc
+    .restapi()
+    .account()
+    .extension()
+    .meeting()
+    .post({
+      topic: 'test meeting, please ignore',
+      meetingType: 'Scheduled',
+      schedule: {
+        startTime: '2030-05-01T00:01:49Z',
+        durationInMinutes: 30,
+        timeZone: {
+          id: '58',
+        },
+      },
+      host: {
+        id: process.env.MEETING_HOST_EXT_ID,
+      },
+    });
+  console.log(response);
+  await rc.restapi().account().extension().meeting(response.id).delete();
 })();
